@@ -1,0 +1,7 @@
+<h1 class="heading">{{heading$ | async}}</h1>
+<form class="form" [formGroup]="authForm" (submit)="onSubmit()">
+  <input formControlName="displayName" type="text" placeholder="Username" />
+  <input formControlName="email" type="email" placeholder="E-mail" />
+  <input formControlName="password" type="password" placeholder="password" />
+  <button type="submit">Register</button>
+</form>

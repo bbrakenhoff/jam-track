@@ -1,0 +1,15 @@
+@import "./_breakpoints";
+
+@mixin container() {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+
+  @include respond-to-breakpoint(tablet) {
+    max-width: 80%;
+  }
+
+  @include respond-to-breakpoint(desktop) {
+    max-width: 70%;
+  }
+}

@@ -1,0 +1,53 @@
+@import "../../styles/layout";
+
+.navbar-shadow {
+  background: linear-gradient(
+    to right,
+    var(--neon-blue),
+    var(--neon-green),
+    var(--neon-yellow),
+    var(--neon-orange),
+    var(--neon-pink),
+    var(--neon-purple)
+  );
+  height: 4rem;
+  filter: blur(1rem);
+  margin-left: -2%;
+  width: 104%;
+}
+
+.navbar {
+  background-color: black;
+  display: flex;
+  align-items: center;
+  height: 4rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  position: relative;
+  top: -4rem;
+}
+
+.navbar-content {
+  @include container();
+
+  align-items: center;
+  display: flex;
+  height: 100%;
+}
+
+.nav-item {
+  color: var(--neon-pink);
+  display: inline-block;
+  font-size: 1.5rem;
+  padding: 1rem;
+  text-decoration: none;
+  transition: all linear 100ms;
+
+  &:hover {
+    color: var(--neon-green);
+  }
+
+  &:active {
+    color: var(--neon-purple);
+  }
+}

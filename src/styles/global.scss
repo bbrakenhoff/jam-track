@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&display=swap');
+
+// init variables
+:root {
+  // colors
+  --neon-pink: #ff00aa;
+  --neon-green: #aaff00;
+  --neon-blue: #00aaff;
+  --neon-yellow: #ffff33;
+  --neon-purple: #aa00ff;
+  --neon-orange: #ffaa00;
+}
+
+
+// reset body
+* {
+  background-color: rgba(0,0,0,0.9);
+  box-sizing: border-box;
+  color: white;
+  font-family: Epilogue, Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+}

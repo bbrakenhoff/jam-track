@@ -13,7 +13,7 @@ import { AuthService } from '../auth.service';
 })
 export class RegisterUserComponent {
   public readonly authForm = this.formBuilder.group({
-    displayName: ['', Validators.required],
+    username: ['', Validators.required],
     email: ['', Validators.required],
     password: ['', Validators.required]
   });
@@ -22,10 +22,12 @@ export class RegisterUserComponent {
   public constructor(private readonly formBuilder: FormBuilder, private readonly authService: AuthService) { }
 
   public onSubmit(): void {
+    this.authForm.markAllAsTouched();
+    console.log(`🍟🍔🍕  register-user.component.ts[ln:26] on submit`);
     if (this.authForm.valid) {
-      this.authService.signUp(this.authForm.value.displayName!, this.authForm.value.email!, this.authForm.value.password!)
+      this.authService.signUp(this.authForm.value.username!, this.authForm.value.email!, this.authForm.value.password!)
         .subscribe({
-          next: (result: string) => console.log(`%c🍟🍔🍕 auth.component.ts[ln:25] next signup`, 'color: deeppink', result),
+          next: (result: string) => console.log(`🍟🍔🍕 auth.component.ts[ln:25] next signup`, result),
           error: (e) => console.error(`%c🍟🍔🍕 auth.component.ts[ln:26] error sign up `, e)
         });
     }

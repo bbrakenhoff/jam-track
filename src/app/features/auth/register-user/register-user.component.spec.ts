@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RegisterUserComponent } from './register-user.component';
 import { AuthService } from '../auth.service';
 import { of } from 'rxjs';
+import { By } from '@angular/platform-browser';
 
 describe('RegisterUserComponent', () => {
   let component: RegisterUserComponent;
@@ -15,10 +16,16 @@ describe('RegisterUserComponent', () => {
     password: 'username123@'
   }
   const htmlElements = {
-    usernameInput: () => (fixture.debugElement.nativeElement as HTMLElement).querySelector('#usernameInput') as HTMLInputElement,
-    emailInput: () => (fixture.debugElement.nativeElement as HTMLElement).querySelector('#emailInput') as HTMLInputElement,
-    passwordInput: () => (fixture.debugElement.nativeElement as HTMLElement).querySelector('#passwordInput') as HTMLInputElement,
-    submitButton: () => (fixture.debugElement.nativeElement as HTMLElement).querySelector('#submitButton') as HTMLButtonElement,
+    usernameInput: () => (fixture.nativeElement as HTMLElement).querySelector('#usernameInput') as HTMLInputElement,
+    usernameError: () => (fixture.debugElement).query(By.css('#usernameError')),
+    emailInput: () => (fixture.nativeElement as HTMLElement).querySelector('#emailInput') as HTMLInputElement,
+    emailError: () => (fixture.debugElement.nativeElement as HTMLElement).querySelector('#emailError'),
+    passwordInput: () => (fixture.nativeElement as HTMLElement).querySelector('#passwordInput') as HTMLInputElement,
+    passwordError: () => (fixture.debugElement.nativeElement as HTMLElement).querySelector('#passwordError'),
+    clickSubmitButton: () => {
+      ((fixture.nativeElement as HTMLElement).querySelector('#submitButton') as HTMLButtonElement).click()
+      fixture.detectChanges();
+    },
     setInput: (htmlInputElement: HTMLInputElement, value: string) => {
       htmlInputElement.value = value;
       htmlInputElement.dispatchEvent(new Event('input', { bubbles: true }));
@@ -40,56 +47,68 @@ describe('RegisterUserComponent', () => {
 
   test('should create', () => {
     expect(component).toBeTruthy();
+
+    expect(htmlElements.usernameError()).toBeNull();
+    expect(htmlElements.emailError()).toBeNull();
+    expect(htmlElements.passwordError()).toBeNull();
   });
 
-  describe('onSubmit()', () => {
-    test('should write the filled in values to reactive form object', () => {
+  describe('submit form', () => {
+
+    test('should request to register through firebase when submitted form is valid', () => {
       htmlElements.setInput(htmlElements.usernameInput(), testData.username);
       htmlElements.setInput(htmlElements.emailInput(), testData.email);
       htmlElements.setInput(htmlElements.passwordInput(), testData.password);
 
-      expect(component.authForm.value).toEqual({ displayName: testData.username, email: testData.email, password: testData.password });
-    });
-
-    test('should request to register through firebase when form valid', () => {
-      htmlElements.setInput(htmlElements.usernameInput(), testData.username);
-      htmlElements.setInput(htmlElements.emailInput(), testData.email);
-      htmlElements.setInput(htmlElements.passwordInput(), testData.password);
-
-      htmlElements.submitButton().click();
+      htmlElements.clickSubmitButton()
 
       expect(authServiceMock.signUp).toHaveBeenCalledWith(testData.username, testData.email, testData.password);
     });
 
-    test('should not request to register through firebase when form empty', () => {
-      htmlElements.submitButton().click();
+    test.only('should not request to register through firebase when submitted form is empty', () => {
+      expect(component.authForm.value).toEqual({ username: '', email: '', password: '' });
+      htmlElements.clickSubmitButton()
+      fixture.detectChanges();
 
+      expect(htmlElements.usernameError()).not.toBeNull();
+      expect(htmlElements.emailError()).not.toBeNull();
+      expect(htmlElements.passwordError()).not.toBeNull();
       expect(authServiceMock.signUp).not.toHaveBeenCalled();
     });
 
-    test('should not request to register through firebase when username empty', () => {
+    test('should not request to register through firebase when submitted form contains empty username', () => {
       htmlElements.setInput(htmlElements.emailInput(), testData.email);
       htmlElements.setInput(htmlElements.passwordInput(), testData.password);
-      htmlElements.submitButton().click();
 
+      htmlElements.clickSubmitButton()
+
+      expect(htmlElements.usernameError()).not.toBeNull();
+      expect(htmlElements.emailError()).toBeNull();
+      expect(htmlElements.passwordError()).toBeNull();
       expect(authServiceMock.signUp).not.toHaveBeenCalled();
     });
 
-    test('should not request to register through firebase when email empty', () => {
+    test('should not request to register through firebase when submitted form contains empty email', () => {
       htmlElements.setInput(htmlElements.usernameInput(), testData.username);
       htmlElements.setInput(htmlElements.passwordInput(), testData.password);
 
-      htmlElements.submitButton().click();
+      htmlElements.clickSubmitButton()
 
+      expect(htmlElements.usernameError()).toBeNull();
+      expect(htmlElements.emailError()).not.toBeNull();
+      expect(htmlElements.passwordError()).toBeNull();
       expect(authServiceMock.signUp).not.toHaveBeenCalled();
     });
 
-    test('should not request to register through firebase when email empty', () => {
+    test('should not request to register through firebase when submitted form contains empty password', () => {
       htmlElements.setInput(htmlElements.usernameInput(), testData.username);
       htmlElements.setInput(htmlElements.emailInput(), testData.email);
 
-      htmlElements.submitButton().click();
+      htmlElements.clickSubmitButton();
 
+      expect(htmlElements.usernameError()).toBeNull();
+      expect(htmlElements.emailError()).not.toBeNull();
+      expect(htmlElements.passwordError()).toBeNull();
       expect(authServiceMock.signUp).not.toHaveBeenCalled();
     });
   });

@@ -1,9 +1,7 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
-import { RegisterUserComponent } from './register-user/register-user.component';
+import { Routes } from '@angular/router';
+import { SignUpComponent as SignUpComponent } from './sign-up/sign-up.component';
 
 export const routes: Routes = [
-  { path: 'register', component: RegisterUserComponent },
-  { path: '', redirectTo: 'register', pathMatch: 'full' }
+  { path: 'sign-up', component: SignUpComponent },
+  { path: '', redirectTo: 'sign-up', pathMatch: 'full' }
 ];

@@ -9,8 +9,15 @@ describe('AuthService', () => {
 
   const authFirebaseServiceMock = {
     createUserWithEmailAndPassword: jest.fn(),
-    updateProfile: jest.fn()
+    updateProfile: jest.fn(),
+    signIn:jest.fn()
   }
+
+  const testData = {
+    displayName: 'Melissa Rivas',
+    email: 'melissa.rivas@test.com',
+    password: 'Mll!55@Rivas'
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -29,19 +36,16 @@ describe('AuthService', () => {
   });
 
   describe('signUp()', () => {
-    const username = 'username123'
-    const email = 'user@test.com';
-    const password = 'password123';
 
     test('should return "success" when creating user and updating username was succesfull', (done: jest.DoneCallback) => {
       const userCredentialMock = { user: {} } as UserCredential;
       authFirebaseServiceMock.createUserWithEmailAndPassword.mockReturnValueOnce(of(userCredentialMock));
       authFirebaseServiceMock.updateProfile.mockReturnValueOnce(of(void 0));
 
-      service.signUp(username, email, password).subscribe({
+      service.signUp(testData.displayName, testData.email, testData.password).subscribe({
         next: (result: string) => {
-          expect(authFirebaseServiceMock.createUserWithEmailAndPassword).toHaveBeenCalledWith(email, password);
-          expect(authFirebaseServiceMock.updateProfile).toHaveBeenCalledWith(userCredentialMock.user, { displayName: username });
+          expect(authFirebaseServiceMock.createUserWithEmailAndPassword).toHaveBeenCalledWith(testData.email, testData.password);
+          expect(authFirebaseServiceMock.updateProfile).toHaveBeenCalledWith(userCredentialMock.user, { displayName: testData.displayName });
           expect(result).toEqual('success');
           done();
         },
@@ -54,10 +58,10 @@ describe('AuthService', () => {
       authFirebaseServiceMock.createUserWithEmailAndPassword.mockReturnValueOnce(of(userCredentialMock));
       authFirebaseServiceMock.updateProfile.mockReturnValueOnce(throwError(() => new Error('failed setting username')));
 
-      service.signUp(username, email, password).subscribe({
+      service.signUp(testData.displayName, testData.email, testData.password).subscribe({
         next: (result: string) => {
-          expect(authFirebaseServiceMock.createUserWithEmailAndPassword).toHaveBeenCalledWith(email, password);
-          expect(authFirebaseServiceMock.updateProfile).toHaveBeenCalledWith(userCredentialMock.user, { displayName: username });
+          expect(authFirebaseServiceMock.createUserWithEmailAndPassword).toHaveBeenCalledWith(testData.email, testData.password);
+          expect(authFirebaseServiceMock.updateProfile).toHaveBeenCalledWith(userCredentialMock.user, { displayName: testData.displayName });
           expect(result).toEqual('updateProfileFailed');
           done();
         },
@@ -69,10 +73,10 @@ describe('AuthService', () => {
       const userCredentialMock = {} as UserCredential;
       authFirebaseServiceMock.createUserWithEmailAndPassword.mockReturnValueOnce(of(userCredentialMock));
 
-      service.signUp(username, email, password).subscribe({
+      service.signUp(testData.displayName, testData.email, testData.password).subscribe({
         next: (result: string) => {
-          expect(authFirebaseServiceMock.createUserWithEmailAndPassword).toHaveBeenCalledWith(email, password);
-          expect(authFirebaseServiceMock.updateProfile).not.toHaveBeenCalledWith(userCredentialMock.user, { displayName: username });
+          expect(authFirebaseServiceMock.createUserWithEmailAndPassword).toHaveBeenCalledWith(testData.email, testData.password);
+          expect(authFirebaseServiceMock.updateProfile).not.toHaveBeenCalledWith(userCredentialMock.user, { displayName: testData.displayName });
           expect(result).toEqual('createUserWithEmailAndPasswordFailed');
           done();
         },
@@ -84,10 +88,75 @@ describe('AuthService', () => {
       const userCredentialMock = { user: {} } as UserCredential;
       authFirebaseServiceMock.createUserWithEmailAndPassword.mockReturnValueOnce(throwError(() => new Error('Could not create user')));
 
-      service.signUp(username, email, password).subscribe({
+      service.signUp(testData.displayName, testData.email, testData.password).subscribe({
         next: (result: string) => {
-          expect(authFirebaseServiceMock.createUserWithEmailAndPassword).toHaveBeenCalledWith(email, password);
-          expect(authFirebaseServiceMock.updateProfile).not.toHaveBeenCalledWith(userCredentialMock.user, { displayName: username });
+          expect(authFirebaseServiceMock.createUserWithEmailAndPassword).toHaveBeenCalledWith(testData.email, testData.password);
+          expect(authFirebaseServiceMock.updateProfile).not.toHaveBeenCalledWith(userCredentialMock.user, { displayName: testData.displayName });
+          expect(result).toEqual('createUserWithEmailAndPasswordFailed');
+          done();
+        },
+        error: done.fail
+      });
+    });
+  });
+
+  describe('signIn()', () => {
+
+    test('should return "success" when creating user and updating username was succesfull', (done: jest.DoneCallback) => {
+      const userCredentialMock = { user: {} } as UserCredential;
+      authFirebaseServiceMock.createUserWithEmailAndPassword.mockReturnValueOnce(of(userCredentialMock));
+      authFirebaseServiceMock.updateProfile.mockReturnValueOnce(of(void 0));
+
+      service.signUp(testData.displayName, testData.email, testData.password).subscribe({
+        next: (result: string) => {
+          expect(authFirebaseServiceMock.createUserWithEmailAndPassword).toHaveBeenCalledWith(testData.email, testData.password);
+          expect(authFirebaseServiceMock.updateProfile).toHaveBeenCalledWith(userCredentialMock.user, { displayName: testData.displayName });
+          expect(result).toEqual('success');
+          done();
+        },
+        error: done.fail
+      });
+    });
+
+    test('should return "updateProfileFailed" when setting username failed', (done: jest.DoneCallback) => {
+      const userCredentialMock = { user: {} } as UserCredential;
+      authFirebaseServiceMock.createUserWithEmailAndPassword.mockReturnValueOnce(of(userCredentialMock));
+      authFirebaseServiceMock.updateProfile.mockReturnValueOnce(throwError(() => new Error('failed setting username')));
+
+      service.signUp(testData.displayName, testData.email, testData.password).subscribe({
+        next: (result: string) => {
+          expect(authFirebaseServiceMock.createUserWithEmailAndPassword).toHaveBeenCalledWith(testData.email, testData.password);
+          expect(authFirebaseServiceMock.updateProfile).toHaveBeenCalledWith(userCredentialMock.user, { displayName: testData.displayName });
+          expect(result).toEqual('updateProfileFailed');
+          done();
+        },
+        error: done.fail
+      });
+    });
+
+    test('should return "createUserWithEmailAndPasswordFailed" when user could not be created', (done: jest.DoneCallback) => {
+      const userCredentialMock = {} as UserCredential;
+      authFirebaseServiceMock.createUserWithEmailAndPassword.mockReturnValueOnce(of(userCredentialMock));
+
+      service.signUp(testData.displayName, testData.email, testData.password).subscribe({
+        next: (result: string) => {
+          expect(authFirebaseServiceMock.createUserWithEmailAndPassword).toHaveBeenCalledWith(testData.email, testData.password);
+          expect(authFirebaseServiceMock.updateProfile).not.toHaveBeenCalledWith(userCredentialMock.user, { displayName: testData.displayName });
+          expect(result).toEqual('createUserWithEmailAndPasswordFailed');
+          done();
+        },
+        error: done.fail
+      });
+    });
+
+    test('should return "createUserWithEmailAndPasswordFailed" when results in an error', (done: jest.DoneCallback) => {
+      const userCredentialMock = { user: {} } as UserCredential;
+      authFirebaseServiceMock.createUserWithEmailAndPassword.mockReturnValueOnce(throwError(() => new Error('Could not create user')));
+
+      service.signUp(testData.displayName, testData.email, testData.password).subscribe({
+        next: (result: string) => {
+          expect(authFirebaseServiceMock.createUserWithEmailAndPassword).toHaveBeenCalledWith(testData.email, testData.password);
+          expect(authFirebaseServiceMock.updateProfile).not.toHaveBeenCalledWith(userCredentialMock.user, { displayName: testData.displayName });
           expect(result).toEqual('createUserWithEmailAndPasswordFailed');
           done();
         },

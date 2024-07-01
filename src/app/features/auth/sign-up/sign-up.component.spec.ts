@@ -65,7 +65,7 @@ describe('SignUpComponent', () => {
       expect(authServiceMock.signUp).toHaveBeenCalledWith(testData.name, testData.email, testData.password);
     });
 
-    test.only('should not request to sign up through firebase when submitted form is empty', () => {
+    test('should not request to sign up through firebase when submitted form is empty', () => {
       expect(component.signUpForm.value).toEqual({ name: '', email: '', password: '' });
       htmlElements.clickSubmitButton()
       fixture.detectChanges();
@@ -107,8 +107,8 @@ describe('SignUpComponent', () => {
       htmlElements.clickSubmitButton();
 
       expect(htmlElements.nameError()).toBeNull();
-      expect(htmlElements.emailError()).not.toBeNull();
-      expect(htmlElements.passwordError()).toBeNull();
+      expect(htmlElements.emailError()).toBeNull();
+      expect(htmlElements.passwordError()).not.toBeNull();
       expect(authServiceMock.signUp).not.toHaveBeenCalled();
     });
   });

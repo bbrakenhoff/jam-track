@@ -1,0 +1,12 @@
+<h1 class="heading">Sign in</h1>
+<form class="form" [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+  <div class="group">
+    <p *ngIf="signInForm.controls.email.invalid && signInForm.controls.email.touched"  id="emailError" class="error">E-mail is required.</p>
+    <input id="emailInput" class="control" formControlName="email" type="email" placeholder="E-mail" />
+  </div>
+  <div class="group">
+    <p *ngIf="signInForm.controls.password.invalid && signInForm.controls.password.touched"  id="passwordError" class="error">Password is required.</p>
+    <input id="passwordInput" class="control" formControlName="password" type="password" placeholder="password" />
+  </div>
+  <button id="submitButton" class="button" type="submit">Sign in</button>
+</form>

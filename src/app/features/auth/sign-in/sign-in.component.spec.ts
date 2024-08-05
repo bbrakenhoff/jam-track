@@ -1,14 +1,12 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { SignInComponent } from "./sign-in.component";
 import { AuthService } from "../auth.service";
 import { of } from "rxjs";
-import { By } from "@angular/platform-browser";
 
 describe("SignInComponent", () => {
 	let component: SignInComponent;
 	let fixture: ComponentFixture<SignInComponent>;
-	const authServiceMock = { signIn: jest.fn().mockReturnValue(of("success")) };
+	const authServiceMock = { signIn: jest.fn().mockReturnValue(of({})) };
 
 	const testData = {
 		email: "username123@test.com",
@@ -57,6 +55,10 @@ describe("SignInComponent", () => {
 		fixture = TestBed.createComponent(SignInComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
+	});
+
+	test("temp test", () => {
+		expect(true).toBe(true);
 	});
 
 	test("should create", () => {

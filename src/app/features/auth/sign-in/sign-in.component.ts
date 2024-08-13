@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
+import { UserCredential } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-sign-in',
@@ -20,13 +21,13 @@ export class SignInComponent {
 
   public onSubmit(): void {
     this.signInForm.markAllAsTouched();
-    console.log(`🍟🍔🍕  sign-in.component.ts[ln:26] on submit`);
     if (this.signInForm.valid) {
-      // this.authService.signUp(this.signInForm.value.username!, this.signInForm.value.email!, this.signInForm.value.password!)
-      //   .subscribe({
-      //     next: (result: string) => console.log(`🍟🍔🍕 auth.component.ts[ln:25] next signup`, result),
-      //     error: (e) => console.error(`%c🍟🍔🍕 auth.component.ts[ln:26] error sign up `, e)
-      //   });
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      this.authService.signIn(this.signInForm.value.email!, this.signInForm.value.password!)
+        .subscribe({
+          next: (userCredential: UserCredential) => console.log(`🍟🍔🍕 sgn-in.component.ts[ln:25] next sign in`, userCredential),
+          error: (e) => console.error(`%c🍟🍔🍕 auth.component.ts[ln:26] error sign up `, e)
+        });
     }
   }
 }

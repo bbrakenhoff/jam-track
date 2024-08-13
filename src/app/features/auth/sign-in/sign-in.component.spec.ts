@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { SignInComponent } from "./sign-in.component";
 import { AuthService } from "../auth.service";
 import { of } from "rxjs";
+import { UserCredential } from "@angular/fire/auth";
 
 describe("SignInComponent", () => {
 	let component: SignInComponent;
@@ -9,8 +10,9 @@ describe("SignInComponent", () => {
 	const authServiceMock = { signIn: jest.fn().mockReturnValue(of({})) };
 
 	const testData = {
-		email: "username123@test.com",
-		password: "username123@",
+		displayName: "Harry Potter",
+		email: "harrypotter@hogwarts.com",
+		password: "HP31081980",
 	};
 
 	const htmlElements = {
@@ -74,8 +76,7 @@ describe("SignInComponent", () => {
 			htmlElements.setInput(htmlElements.passwordInput(), testData.password);
 
 			htmlElements.clickSubmitButton();
-
-			// expect(authServiceMock.signUp).toHaveBeenCalledWith(testData.username, testData.email, testData.password);
+			expect(authServiceMock.signIn).toHaveBeenCalledWith(testData.email, testData.password);
 		});
 
 		test("should not request to register through firebase when submitted form is empty", () => {
@@ -85,7 +86,7 @@ describe("SignInComponent", () => {
 
 			expect(htmlElements.emailError()).not.toBeNull();
 			expect(htmlElements.passwordError()).not.toBeNull();
-			// expect(authServiceMock.signUp).not.toHaveBeenCalled();
+			expect(authServiceMock.signIn).not.toHaveBeenCalled();
 		});
 
 		test("should not request to register through firebase when submitted form contains empty email", () => {
@@ -95,7 +96,7 @@ describe("SignInComponent", () => {
 
 			expect(htmlElements.emailError()).not.toBeNull();
 			expect(htmlElements.passwordError()).toBeNull();
-			// expect(authServiceMock.signUp).not.toHaveBeenCalled();
+			expect(authServiceMock.signIn).not.toHaveBeenCalled();
 		});
 
 		test("should not request to register through firebase when submitted form contains empty password", () => {
@@ -105,7 +106,7 @@ describe("SignInComponent", () => {
 
 			expect(htmlElements.emailError()).toBeNull();
 			expect(htmlElements.passwordError()).not.toBeNull();
-			// expect(authServiceMock.signUp).not.toHaveBeenCalled();
+			expect(authServiceMock.signIn).not.toHaveBeenCalled();
 		});
 	});
 });

@@ -1,6 +1,13 @@
 import { Injectable } from "@angular/core";
 import { type UserCredential } from "@angular/fire/auth";
-import { type Observable, catchError, map, of, switchMap } from "rxjs";
+import {
+	type Observable,
+	catchError,
+	map,
+	of,
+	switchMap,
+	throwError,
+} from "rxjs";
 import { AuthFirebaseService } from "./auth-firebase.service";
 
 @Injectable({
@@ -36,7 +43,7 @@ export class AuthService {
 		username: string,
 	): Observable<string> {
 		return this.authFirebaseService
-			.updateProfile(userCredential.user,username )
+			.updateProfile(userCredential.user, username)
 			.pipe(
 				map(() => "success"),
 				catchError((e) => of("updateProfileFailed")),
@@ -44,14 +51,7 @@ export class AuthService {
 	}
 
 	public signIn(email: string, password: string): Observable<UserCredential> {
-		return this.authFirebaseService.signIn(email, password).pipe(
-			map((userCredential) => userCredential.user),
-			catchError((error) => {
-				console.error("%c🍟🍔🍕 auth.service.ts[ln:47]", error);
-				return of(error);
-			}),
-		);
-		// .pipe(map((u) =>u.user.));
+		return this.authFirebaseService.signIn(email, password);
 	}
 
 	public authState() {

@@ -80,7 +80,7 @@ describe("AuthService", () => {
 				of(fakeReturnData.userCredential),
 			);
 			authFirebaseServiceMock.updateProfile.mockReturnValueOnce(
-				throwError(()=> new Error('update profile failed'))
+				throwError(() => new Error("update profile failed")),
 			);
 
 			service
@@ -105,7 +105,6 @@ describe("AuthService", () => {
 			authFirebaseServiceMock.createUserWithEmailAndPassword.mockReturnValueOnce(
 				of({}),
 			);
-
 
 			service
 				.signUp(testData.displayName, testData.email, testData.password)
@@ -161,10 +160,25 @@ describe("AuthService", () => {
 
 			service.signIn(testData.email, testData.password).subscribe({
 				next: (user) => {
-					expect(user).toBe(fakeReturnData.userCredential.user);
+					
+					expect(user).toEqual(fakeReturnData.userCredential);
 					done();
 				},
 				error: done.fail,
+			});
+		});
+
+		test("should return a error when sign in unsuccessful", (done: jest.DoneCallback) => {
+			authFirebaseServiceMock.signIn.mockReturnValueOnce(
+				throwError(() => new Error("sign in failed!")),
+			);
+
+			service.signIn(testData.email, testData.password).subscribe({
+				next: () => done.fail(),
+				error: (e) => {
+					expect(e.message).toEqual("sign in failed!");
+					done();
+				},
 			});
 		});
 	});

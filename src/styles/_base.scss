@@ -1,0 +1,15 @@
+@mixin link {
+  color: var(--neon-pink);
+
+  &:visited {
+    color: var(--neon-pink);
+  }
+
+  &:active {
+    color: var(--neon-green);
+  }
+
+  &:hover {
+    color: var(--neon-purple);
+  }
+}

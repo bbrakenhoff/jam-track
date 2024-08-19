@@ -7,10 +7,11 @@ import {
 	signInWithEmailAndPassword,
 	signOut,
 	updateProfile,
+	user,
 	type User,
 	type UserCredential,
 } from "@angular/fire/auth";
-import { type Observable, from } from "rxjs";
+import { type Observable, Subject, from } from "rxjs";
 
 @Injectable({
 	providedIn: "root",
@@ -42,6 +43,6 @@ export class AuthFirebaseService {
 	}
 
 	public authState(): Observable<User | null> {
-		return from(authState(this.auth));
+		return authState(this.auth);
 	}
 }

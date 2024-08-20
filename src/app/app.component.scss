@@ -1,7 +1,7 @@
 @import "../styles/layout";
 
 .main {
-  background: rgba(0, 0, 0, 0.9);
+  background: rgb(0 0 0 / 90%);
   display: block;
   height: 100%;
   position: fixed;
@@ -9,5 +9,5 @@
 }
 
 .router-container {
-  @include container()
+  @include container;
 }

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { type UserCredential } from "@angular/fire/auth";
+import { OAuthCredential, type UserCredential } from "@angular/fire/auth";
 import {
 	type Observable,
 	catchError,
@@ -56,5 +56,9 @@ export class AuthService {
 
 	public authState() {
 		return this.authFirebaseService.authState();
+	}
+
+	public googleSignIn():Observable<OAuthCredential|null>{
+		return this.authFirebaseService.googleSignIn();
 	}
 }

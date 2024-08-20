@@ -182,4 +182,10 @@ describe("AuthService", () => {
 			});
 		});
 	});
+
+	describe("googleSignIn()", () =>{
+		it('should start sign in through popup', () =>{
+
+		});
+	})
 });

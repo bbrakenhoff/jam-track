@@ -4,7 +4,11 @@ import {
 	Auth,
 	authState,
 	createUserWithEmailAndPassword,
+	getAuth,
+	GoogleAuthProvider,
+	OAuthCredential,
 	signInWithEmailAndPassword,
+	signInWithPopup,
 	signOut,
 	updateProfile,
 	user,
@@ -44,5 +48,24 @@ export class AuthFirebaseService {
 
 	public authState(): Observable<User | null> {
 		return authState(this.auth);
+	}
+
+	public googleSignIn(): Observable<OAuthCredential | null> {
+		const userCredentialSubject = new Subject<OAuthCredential | null>();
+		const provider = new GoogleAuthProvider();
+		const auth = getAuth();
+		signInWithPopup(auth, provider)
+			.then((userCredential: UserCredential) => {
+				const credentialFromResult =
+					GoogleAuthProvider.credentialFromResult(userCredential);
+				userCredentialSubject.next(credentialFromResult);
+			})
+			.catch((error) => {
+				userCredentialSubject.error(
+					GoogleAuthProvider.credentialFromError(error),
+				);
+			});
+
+		return userCredentialSubject.asObservable();
 	}
 }

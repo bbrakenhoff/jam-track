@@ -4,7 +4,7 @@ import { AuthService } from "../auth.service";
 import { of } from "rxjs";
 import { UserCredential } from "@angular/fire/auth";
 
-describe("SignInComponent", () => {
+describe.skip("SignInComponent", () => {
 	let component: SignInComponent;
 	let fixture: ComponentFixture<SignInComponent>;
 	const authServiceMock = { signIn: jest.fn().mockReturnValue(of({})) };

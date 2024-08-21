@@ -2,20 +2,18 @@ import { Injectable } from "@angular/core";
 // biome-ignore lint/style/useImportType: <explanation>
 import {
 	Auth,
+	AuthProvider,
+	type User,
+	type UserCredential,
 	authState,
 	createUserWithEmailAndPassword,
 	getAuth,
-	GoogleAuthProvider,
-	OAuthCredential,
 	signInWithEmailAndPassword,
 	signInWithPopup,
 	signOut,
-	updateProfile,
-	user,
-	type User,
-	type UserCredential,
+	updateProfile
 } from "@angular/fire/auth";
-import { type Observable, Subject, from } from "rxjs";
+import { type Observable, from } from "rxjs";
 
 @Injectable({
 	providedIn: "root",
@@ -50,22 +48,11 @@ export class AuthFirebaseService {
 		return authState(this.auth);
 	}
 
-	public googleSignIn(): Observable<OAuthCredential | null> {
-		const userCredentialSubject = new Subject<OAuthCredential | null>();
-		const provider = new GoogleAuthProvider();
-		const auth = getAuth();
-		signInWithPopup(auth, provider)
-			.then((userCredential: UserCredential) => {
-				const credentialFromResult =
-					GoogleAuthProvider.credentialFromResult(userCredential);
-				userCredentialSubject.next(credentialFromResult);
-			})
-			.catch((error) => {
-				userCredentialSubject.error(
-					GoogleAuthProvider.credentialFromError(error),
-				);
-			});
+	public getAuth(): Auth {
+		return getAuth();
+	}
 
-		return userCredentialSubject.asObservable();
+	public signInWithPopup(auth: Auth, provider: AuthProvider) {
+		return from(signInWithPopup(auth, provider));
 	}
 }

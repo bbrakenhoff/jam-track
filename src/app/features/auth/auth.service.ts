@@ -1,12 +1,15 @@
 import { Injectable } from "@angular/core";
-import { OAuthCredential, type UserCredential } from "@angular/fire/auth";
+import {
+	GoogleAuthProvider,
+	OAuthCredential,
+	type UserCredential
+} from "@angular/fire/auth";
 import {
 	type Observable,
 	catchError,
 	map,
 	of,
-	switchMap,
-	throwError,
+	switchMap
 } from "rxjs";
 import { AuthFirebaseService } from "./auth-firebase.service";
 
@@ -58,7 +61,19 @@ export class AuthService {
 		return this.authFirebaseService.authState();
 	}
 
-	public googleSignIn():Observable<OAuthCredential|null>{
-		return this.authFirebaseService.googleSignIn();
+	public googleSignIn(): Observable<OAuthCredential | null> {
+		return this.authFirebaseService
+			.signInWithPopup(
+				this.authFirebaseService.getAuth(),
+				new GoogleAuthProvider(),
+			)
+			.pipe(
+				map((result: UserCredential) =>
+					GoogleAuthProvider.credentialFromResult(result),
+				),
+				catchError((error) =>
+					of(GoogleAuthProvider.credentialFromError(error)),
+				),
+			);
 	}
 }

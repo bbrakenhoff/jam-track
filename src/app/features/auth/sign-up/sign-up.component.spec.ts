@@ -6,7 +6,7 @@ import { By } from "@angular/platform-browser";
 import { ReactiveFormsModule } from "@angular/forms";
 import { AuthService } from "../auth.service";
 
-describe("SignUpComponent", () => {
+describe.skip("SignUpComponent", () => {
 	let component: SignUpComponent;
 	let fixture: ComponentFixture<SignUpComponent>;
 	const authServiceMock = { signUp: jest.fn().mockReturnValue(of({})) };

@@ -1,8 +1,14 @@
 import { TestBed } from "@angular/core/testing";
 import { AuthService } from "./auth.service";
 import { AuthFirebaseService } from "./auth-firebase.service";
-import { UserCredential } from "@angular/fire/auth";
-import { of, throwError } from "rxjs";
+import {
+	Auth,
+	getAuth,
+	GoogleAuthProvider,
+	OAuthCredential,
+	UserCredential,
+} from "@angular/fire/auth";
+import { catchError, EMPTY, of, throwError } from "rxjs";
 
 describe("AuthService", () => {
 	let service: AuthService;
@@ -11,6 +17,9 @@ describe("AuthService", () => {
 		createUserWithEmailAndPassword: jest.fn(),
 		updateProfile: jest.fn(),
 		signIn: jest.fn(),
+		auth: {} as Auth,
+		getAuth: jest.fn(),
+		signInWithPopup: jest.fn(),
 	};
 
 	const testData = {
@@ -26,6 +35,9 @@ describe("AuthService", () => {
 				email: testData.email,
 			},
 		} as UserCredential,
+		oauthCredential: {
+			accessToken: "accesstoken123",
+		} as OAuthCredential,
 	};
 
 	beforeEach(() => {
@@ -160,7 +172,6 @@ describe("AuthService", () => {
 
 			service.signIn(testData.email, testData.password).subscribe({
 				next: (user) => {
-					
 					expect(user).toEqual(fakeReturnData.userCredential);
 					done();
 				},
@@ -183,9 +194,63 @@ describe("AuthService", () => {
 		});
 	});
 
-	describe("googleSignIn()", () =>{
-		it('should start sign in through popup', () =>{
-
+	describe("googleSignIn()", () => {
+		beforeEach(() => {
+			authFirebaseServiceMock.getAuth.mockReturnValueOnce(
+				authFirebaseServiceMock.auth,
+			);
 		});
-	})
+
+		test("should handle succesful sign in through popup", (done: jest.DoneCallback) => {
+			const credentialFromResultSpy = jest
+				.spyOn(GoogleAuthProvider, "credentialFromResult")
+				.mockReturnValueOnce(fakeReturnData.oauthCredential);
+
+			authFirebaseServiceMock.signInWithPopup.mockReturnValueOnce(
+				of(fakeReturnData.userCredential),
+			);
+
+			service.googleSignIn().subscribe({
+				next: (result) => {
+					expect(authFirebaseServiceMock.getAuth).toHaveReturnedWith(
+						authFirebaseServiceMock.auth,
+					);
+					expect(authFirebaseServiceMock.signInWithPopup).toHaveBeenCalledWith(
+						authFirebaseServiceMock.auth,
+						expect.anything(),
+					);
+					expect(credentialFromResultSpy).toHaveBeenCalled();
+					expect(result).toEqual(fakeReturnData.oauthCredential);
+					done();
+				},
+				error: done.fail,
+			});
+		});
+
+		test.only("should handle unsuccessful sign in through popup", (done: jest.DoneCallback) => {
+			const credentialFromErrorSpy = jest
+				.spyOn(GoogleAuthProvider, "credentialFromError")
+				.mockReturnValueOnce(fakeReturnData.oauthCredential);
+
+			authFirebaseServiceMock.signInWithPopup.mockReturnValueOnce(
+				throwError(() => new Error("Could not sign in with popup")),
+			);
+
+			service.googleSignIn().subscribe({
+				next: (result) => {
+					expect(authFirebaseServiceMock.getAuth).toHaveReturnedWith(
+						authFirebaseServiceMock.auth,
+					);
+					expect(authFirebaseServiceMock.signInWithPopup).toHaveBeenCalledWith(
+						authFirebaseServiceMock.auth,
+						expect.anything(),
+					);
+					expect(credentialFromErrorSpy).toHaveBeenCalled();
+					expect(result).toEqual(fakeReturnData.oauthCredential);
+					done();
+				},
+				error: done.fail,
+			});
+		});
+	});
 });

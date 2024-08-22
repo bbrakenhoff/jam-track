@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Router, RouterOutlet } from "@angular/router";
 import { NavbarComponent } from "./navbar/navbar.component";
 import { AuthService } from "./features/auth/auth.service";
@@ -18,7 +18,7 @@ export class AppComponent {
 	) {
 		this.authService.authState().subscribe({
 			next: (user: User | null) => {
-        console.log(`%c🍟🍔🍕 app.component.ts[ln:21]`, 'color: deeppink')
+				console.log(`%c🍟🍔🍕 app.component.ts[ln:21]`, "color: deeppink");
 				if (user) {
 					this.router.navigate(["overview"]);
 				} else {

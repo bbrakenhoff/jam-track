@@ -1,14 +1,13 @@
 import { TestBed } from "@angular/core/testing";
-import { AuthService } from "./auth.service";
-import { AuthFirebaseService } from "./auth-firebase.service";
 import {
 	Auth,
-	getAuth,
 	GoogleAuthProvider,
 	OAuthCredential,
 	UserCredential,
 } from "@angular/fire/auth";
-import { catchError, EMPTY, of, throwError } from "rxjs";
+import { of, throwError } from "rxjs";
+import { AuthFirebaseService } from "./auth-firebase.service";
+import { AuthService } from "./auth.service";
 
 describe("AuthService", () => {
 	let service: AuthService;
@@ -24,7 +23,7 @@ describe("AuthService", () => {
 
 	const testData = {
 		displayName: "Harry Potter",
-		email: "harrypotter@hogwarts.com",
+		email: "harry.potter@hogwarts.com",
 		password: "HP31081980",
 	};
 
@@ -227,7 +226,7 @@ describe("AuthService", () => {
 			});
 		});
 
-		test.only("should handle unsuccessful sign in through popup", (done: jest.DoneCallback) => {
+		test("should handle unsuccessful sign in through popup", (done: jest.DoneCallback) => {
 			const credentialFromErrorSpy = jest
 				.spyOn(GoogleAuthProvider, "credentialFromError")
 				.mockReturnValueOnce(fakeReturnData.oauthCredential);
